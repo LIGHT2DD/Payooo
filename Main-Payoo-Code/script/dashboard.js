@@ -93,11 +93,11 @@ class DashboardController {
 
     const icon = themeToggle.querySelector("i");
     if (this.currentTheme === "dark") {
-      icon.className = "fa-solid fa-sun text-lg";
-      themeToggle.title = "Switch to Light Mode";
-    } else {
       icon.className = "fa-solid fa-moon text-lg";
-      themeToggle.title = "Switch to Dark Mode";
+      themeToggle.title = "Dark Mode";
+    } else {
+      icon.className = "fa-regular fa-lightbulb text-lg";
+      themeToggle.title = "Light Mode";
     }
   }
 
@@ -184,10 +184,10 @@ class DashboardController {
         "currency-db-text": "Currency DB",
         "qr-text": "QR Scanner",
         "quick-actions-title": "Quick Actions",
-        "quick-add-text": "Quick Add $100",
-        "quick-add-subtitle": "Instant deposit from default bank",
-        "quick-cashout-text": "Quick Cashout $50",
-        "quick-cashout-subtitle": "Instant withdrawal to default agent",
+        "quick-send-text": "Send Money",
+        "quick-send-subtitle": "Open the send money page",
+        "quick-pay-bill-text": "Pay Bill",
+        "quick-pay-bill-subtitle": "Open the bill payment page",
         "recent-activity-title": "Recent Activity",
         "view-all-text": "View All",
         "no-transactions-text": "No recent transactions",
@@ -219,10 +219,10 @@ class DashboardController {
         "currency-db-text": "মুদ্রা ডাটাবেস",
         "qr-text": "কিউআর স্ক্যানার",
         "quick-actions-title": "দ্রুত অ্যাকশন",
-        "quick-add-text": "দ্রুত $১০০ যোগ করুন",
-        "quick-add-subtitle": "ডিফল্ট ব্যাংক থেকে তাৎক্ষণিক জমা",
-        "quick-cashout-text": "দ্রুত $৫০ ক্যাশআউট",
-        "quick-cashout-subtitle": "ডিফল্ট এজেন্টে তাৎক্ষণিক উত্তোলন",
+        "quick-send-text": "টাকা পাঠান",
+        "quick-send-subtitle": "সেন্ড মানি পেজ খুলুন",
+        "quick-pay-bill-text": "বিল পরিশোধ",
+        "quick-pay-bill-subtitle": "বিল পেমেন্ট পেজ খুলুন",
         "recent-activity-title": "সাম্প্রতিক কার্যকলাপ",
         "view-all-text": "সব দেখুন",
         "no-transactions-text": "কোন সাম্প্রতিক লেনদেন নেই",
@@ -419,100 +419,17 @@ class DashboardController {
   // ==================== QUICK ACTIONS ====================
 
   setupQuickActions() {
-    const quickAddBtn = document.getElementById("quick-add-100");
-    if (quickAddBtn) {
-      quickAddBtn.addEventListener("click", async () => {
-        if (this.isProcessing) return;
-        this.isProcessing = true;
-
-        try {
-          const result = await BankService.addMoney(
-            this.userId,
-            100,
-            "Quick Deposit",
-            "01234567890",
-          );
-
-          if (result.success) {
-            this.user.balance = result.data.newBalance;
-            this.user.transactions = [
-              result.data.transaction,
-              ...(this.user.transactions || []),
-            ];
-            SessionManager.setSession(
-              sessionStorage.getItem("payoo_token"),
-              this.user,
-            );
-
-            this.refreshDashboard();
-
-            const msg =
-              this.currentLang === "bn"
-                ? "✅ দ্রুত $১০০ যোগ করা হয়েছে!"
-                : "✅ Quick added $100 successfully!";
-            displaySuccess(msg);
-          } else {
-            displayError(result.error);
-          }
-        } catch (error) {
-          console.error("Quick add error:", error);
-          displayError("Quick add failed. Please try again.");
-        } finally {
-          this.isProcessing = false;
-        }
+    const quickSendBtn = document.getElementById("quick-send-money");
+    if (quickSendBtn) {
+      quickSendBtn.addEventListener("click", () => {
+        window.location.href = "send-money.html";
       });
     }
 
-    const quickCashoutBtn = document.getElementById("quick-cashout-50");
-    if (quickCashoutBtn) {
-      quickCashoutBtn.addEventListener("click", async () => {
-        if (this.isProcessing) return;
-
-        if (this.user.balance < 50) {
-          const msg =
-            this.currentLang === "bn"
-              ? "পর্যাপ্ত ব্যালেন্স নেই"
-              : "Insufficient balance";
-          displayError(msg);
-          return;
-        }
-
-        this.isProcessing = true;
-
-        try {
-          const result = await BankService.cashout(
-            this.userId,
-            "09876543210",
-            50,
-          );
-
-          if (result.success) {
-            this.user.balance = result.data.newBalance;
-            this.user.transactions = [
-              result.data.transaction,
-              ...(this.user.transactions || []),
-            ];
-            SessionManager.setSession(
-              sessionStorage.getItem("payoo_token"),
-              this.user,
-            );
-
-            this.refreshDashboard();
-
-            const msg =
-              this.currentLang === "bn"
-                ? "✅ দ্রুত $৫০ ক্যাশআউট সম্পন্ন!"
-                : "✅ Quick cashed out $50 successfully!";
-            displaySuccess(msg);
-          } else {
-            displayError(result.error);
-          }
-        } catch (error) {
-          console.error("Quick cashout error:", error);
-          displayError("Quick cashout failed. Please try again.");
-        } finally {
-          this.isProcessing = false;
-        }
+    const quickPayBillBtn = document.getElementById("quick-pay-bill");
+    if (quickPayBillBtn) {
+      quickPayBillBtn.addEventListener("click", () => {
+        window.location.href = "pay-bill.html";
       });
     }
   }

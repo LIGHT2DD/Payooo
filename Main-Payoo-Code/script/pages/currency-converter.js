@@ -1,7 +1,16 @@
-import { displayError } from "../dom.js";
+import { displayError, updateBalanceDisplay } from "../dom.js";
+import { SessionManager } from "../bankservice.js";
 
 class CurrencyConverter {
   constructor() {
+    if (!SessionManager.isAuthenticated()) {
+      window.location.href = "../index.html";
+      return;
+    }
+
+    const session = SessionManager.getSession();
+    this.user = session.user;
+
     this.rates = {
       USD: 1,
       EUR: 0.92,
@@ -16,6 +25,14 @@ class CurrencyConverter {
   }
 
   init() {
+    document.getElementById("convert-btn").addEventListener("click", () => {
+      this.convert();
+    });
+  }
+
+  init() {
+    updateBalanceDisplay(this.user.balance);
+
     document.getElementById("convert-btn").addEventListener("click", () => {
       this.convert();
     });

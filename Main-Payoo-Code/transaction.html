@@ -6,6 +6,17 @@
     <title>Payoo | Transactions</title>
     <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
 
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+
     <!-- tailwind+daisy -->
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
@@ -43,6 +54,31 @@
       .transaction-item:hover {
         transform: translateX(4px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      [data-theme="dark"] body,
+      [data-theme="dark"] .transaction-item,
+      [data-theme="dark"] .transaction-item p,
+      [data-theme="dark"] .transaction-item .text-neutral\/50,
+      [data-theme="dark"] #transactions-container,
+      [data-theme="dark"] #transactions-container * {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      [data-theme="dark"] #transactions-container .text-center {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      [data-theme="dark"] .transaction-item {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Button press effect - soft blue */
+      .btn:active,
+      button:active {
+        background-color: rgb(59, 130, 246) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
       }
     </style>
   </head>

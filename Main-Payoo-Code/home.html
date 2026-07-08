@@ -6,6 +6,17 @@
     <title>Payoo | Home</title>
     <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
 
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+
     <!-- tailwind+daisy -->
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
@@ -182,7 +193,9 @@
       [data-theme="dark"] .bg-base-100,
       [data-theme="dark"] .bg-base-200,
       [data-theme="dark"] .btn-soft,
-      [data-theme="dark"] .quick-action {
+      [data-theme="dark"] .quick-action,
+      [data-theme="dark"] .nav-btn,
+      [data-theme="dark"] .nav-btn p {
         color: oklch(var(--bc));
       }
 
@@ -190,7 +203,7 @@
       [data-theme="dark"] .text-neutral\/70,
       [data-theme="dark"] .text-neutral\/30,
       [data-theme="dark"] .text-neutral\/40 {
-        color: rgba(255, 255, 255, 0.86) !important;
+        color: rgba(255, 255, 255, 0.95) !important;
       }
 
       [data-theme="dark"] .text-neutral\/50 {
@@ -199,6 +212,16 @@
 
       [data-theme="dark"] .border-gray-300 {
         border-color: rgba(255, 255, 255, 0.15) !important;
+      }
+
+      /* Button press effect - soft blue */
+      .btn:active,
+      button:active,
+      .quick-action:active,
+      .nav-btn:active {
+        background-color: rgb(59, 130, 246) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
       }
     </style>
   </head>
@@ -233,7 +256,7 @@
             class="theme-toggle btn btn-ghost btn-sm btn-circle"
             title="Toggle Theme"
           >
-            <i class="fa-solid fa-moon text-lg"></i>
+            <i class="fa-regular fa-lightbulb text-lg"></i>
           </button>
 
           <!-- Language Toggle -->
@@ -482,46 +505,44 @@
         Quick Actions
       </h3>
       <div class="space-y-2">
-        <!-- Quick Add $100 -->
+        <!-- Send Money -->
         <button
-          id="quick-add-100"
+          id="quick-send-money"
           class="quick-action w-full flex items-center justify-between p-4 bg-base-100 rounded-xl shadow-sm"
         >
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center"
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
             >
-              <i class="fa-solid fa-bolt text-success"></i>
+              <i class="fa-solid fa-paper-plane text-primary"></i>
             </div>
             <div class="text-left">
-              <p class="font-medium text-sm" id="quick-add-text">
-                Quick Add $100
-              </p>
-              <p class="text-xs text-neutral/50" id="quick-add-subtitle">
-                Instant deposit from default bank
+              <p class="font-medium text-sm" id="quick-send-text">Send Money</p>
+              <p class="text-xs text-neutral/50" id="quick-send-subtitle">
+                Open the send money page
               </p>
             </div>
           </div>
           <i class="fa-solid fa-chevron-right text-neutral/30"></i>
         </button>
 
-        <!-- Quick Cashout $50 -->
+        <!-- Pay Bill -->
         <button
-          id="quick-cashout-50"
+          id="quick-pay-bill"
           class="quick-action w-full flex items-center justify-between p-4 bg-base-100 rounded-xl shadow-sm"
         >
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center"
+              class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center"
             >
-              <i class="fa-solid fa-arrow-down text-error"></i>
+              <i class="fa-solid fa-file-invoice text-secondary"></i>
             </div>
             <div class="text-left">
-              <p class="font-medium text-sm" id="quick-cashout-text">
-                Quick Cashout $50
+              <p class="font-medium text-sm" id="quick-pay-bill-text">
+                Pay Bill
               </p>
-              <p class="text-xs text-neutral/50" id="quick-cashout-subtitle">
-                Instant withdrawal to default agent
+              <p class="text-xs text-neutral/50" id="quick-pay-bill-subtitle">
+                Open the bill payment page
               </p>
             </div>
           </div>

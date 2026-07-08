@@ -6,6 +6,17 @@
     <title>Payoo | Add Money</title>
     <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
 
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+
     <!-- tailwind+daisy -->
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
@@ -67,6 +78,24 @@
 
       .animate-fade-in {
         animation: fade-in 0.3s ease-out;
+      }
+
+      /* Button press effect - soft blue */
+      .btn:active,
+      button:active {
+        background-color: rgb(59, 130, 246) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
+      }
+
+      /* Dark mode text contrast */
+      [data-theme="dark"] body,
+      [data-theme="dark"] .text-neutral,
+      [data-theme="dark"] .text-neutral\/50,
+      [data-theme="dark"] .text-neutral\/60,
+      [data-theme="dark"] .text-neutral\/70,
+      [data-theme="dark"] p {
+        color: rgba(255, 255, 255, 0.95) !important;
       }
     </style>
   </head>

@@ -1,22 +1,37 @@
-import { displayError } from "../dom.js";
+import { displayError, updateBalanceDisplay } from "../dom.js";
+import { SessionManager } from "../bankservice.js";
 
 class BudgetCalculator {
   constructor() {
+    if (!SessionManager.isAuthenticated()) {
+      window.location.href = "../index.html";
+      return;
+    }
+
+    const session = SessionManager.getSession();
+    this.user = session.user;
+
     this.init();
   }
 
   init() {
+    updateBalanceDisplay(this.user.balance);
+
     document.getElementById("calculate-btn").addEventListener("click", () => {
       this.calculateBudget();
     });
   }
 
   calculateBudget() {
-    const income = parseFloat(document.getElementById("monthly-income").value) || 0;
-    const housing = parseFloat(document.getElementById("expense-housing").value) || 0;
+    const income =
+      parseFloat(document.getElementById("monthly-income").value) || 0;
+    const housing =
+      parseFloat(document.getElementById("expense-housing").value) || 0;
     const food = parseFloat(document.getElementById("expense-food").value) || 0;
-    const transport = parseFloat(document.getElementById("expense-transport").value) || 0;
-    const utilities = parseFloat(document.getElementById("expense-utilities").value) || 0;
+    const transport =
+      parseFloat(document.getElementById("expense-transport").value) || 0;
+    const utilities =
+      parseFloat(document.getElementById("expense-utilities").value) || 0;
 
     if (income <= 0) {
       displayError("Please enter your monthly income");
@@ -43,7 +58,7 @@ class BudgetCalculator {
       </div>
       <div class="flex justify-between p-2 bg-base-200 rounded-lg">
         <span>Remaining</span>
-        <span class="font-bold ${remaining >= 0 ? 'text-success' : 'text-error'}">$${remaining}</span>
+        <span class="font-bold ${remaining >= 0 ? "text-success" : "text-error"}">$${remaining}</span>
       </div>
       <div class="flex justify-between p-2 bg-base-200 rounded-lg">
         <span>Savings Rate</span>

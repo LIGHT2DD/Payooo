@@ -1,38 +1,69 @@
+import { updateBalanceDisplay } from "../dom.js";
+import { SessionManager } from "../bankservice.js";
+
 class CurrencyDatabase {
   constructor() {
-    this.currencies = [
-      { code: "USD", name: "US Dollar", symbol: "$", rate: 1 },
-      { code: "EUR", name: "Euro", symbol: "€", rate: 0.92 },
-      { code: "GBP", name: "British Pound", symbol: "£", rate: 0.79 },
-      { code: "BDT", name: "Bangladeshi Taka", symbol: "৳", rate: 109.5 },
-      { code: "INR", name: "Indian Rupee", symbol: "₹", rate: 83.12 },
-      { code: "JPY", name: "Japanese Yen", symbol: "¥", rate: 149.5 },
-      { code: "CAD", name: "Canadian Dollar", symbol: "C$", rate: 1.35 },
-      { code: "AUD", name: "Australian Dollar", symbol: "A$", rate: 1.53 },
-      { code: "CNY", name: "Chinese Yuan", symbol: "¥", rate: 7.24 },
-      { code: "SAR", name: "Saudi Riyal", symbol: "﷼", rate: 3.75 },
-    ];
+    if (!SessionManager.isAuthenticated()) {
+      window.location.href = "../index.html";
+      return;
+    }
+
+    const session = SessionManager.getSession();
+    this.user = session.user;
+    this.currencies = [];
 
     this.init();
   }
 
-  init() {
+  async init() {
+    updateBalanceDisplay(this.user.balance);
+
+    await this.loadCurrencies();
     this.renderCurrencies(this.currencies);
 
-    document.getElementById("currency-search").addEventListener("input", (e) => {
-      const search = e.target.value.toLowerCase();
-      const filtered = this.currencies.filter(c => 
-        c.name.toLowerCase().includes(search) || 
-        c.code.toLowerCase().includes(search)
-      );
-      this.renderCurrencies(filtered);
-    });
+    document
+      .getElementById("currency-search")
+      .addEventListener("input", (e) => {
+        const search = e.target.value.toLowerCase();
+        const filtered = this.currencies.filter(
+          (c) =>
+            c.name.toLowerCase().includes(search) ||
+            c.code.toLowerCase().includes(search),
+        );
+        this.renderCurrencies(filtered);
+      });
+  }
+
+  async loadCurrencies() {
+    try {
+      const response = await fetch("data/data.json");
+      if (!response.ok) {
+        throw new Error(`Failed to load currency data: ${response.status}`);
+      }
+
+      const rawData = await response.json();
+      this.currencies = Object.entries(rawData).map(([code, data]) => ({
+        code,
+        name: data.name,
+        symbol: data.symbol,
+        rate: data.rate ?? "N/A",
+      }));
+
+      this.currencies.sort((a, b) => a.code.localeCompare(b.code));
+    } catch (error) {
+      console.error(error);
+      this.currencies = [
+        { code: "USD", name: "US Dollar", symbol: "$", rate: 1 },
+      ];
+    }
   }
 
   renderCurrencies(currencies) {
     const container = document.getElementById("currency-list");
-    
-    container.innerHTML = currencies.map(currency => `
+
+    container.innerHTML = currencies
+      .map(
+        (currency) => `
       <div class="currency-row flex justify-between items-center p-3 bg-base-100 rounded-xl shadow-sm">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center font-bold">
@@ -48,7 +79,9 @@ class CurrencyDatabase {
           <p class="text-xs text-neutral/50">Rate: ${currency.rate}</p>
         </div>
       </div>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 }
 
