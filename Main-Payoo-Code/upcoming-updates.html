@@ -92,9 +92,21 @@
             rows="5"
             placeholder="Write your review or suggestion here..."
           ></textarea>
-          <button class="btn btn-primary mt-3">Send Feedback</button>
+          <button id="sendFeedbackBtn" class="btn btn-primary mt-3">
+            Send Feedback
+          </button>
         </div>
       </div>
     </section>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("sendFeedbackBtn");
+        if (btn) {
+          btn.addEventListener("click", function () {
+            alert("Thank you for your feedback");
+          });
+        }
+      });
+    </script>
   </body>
 </html>
