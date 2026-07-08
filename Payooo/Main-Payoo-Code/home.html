@@ -54,7 +54,8 @@
       }
 
       /* Bengali font */
-      .lang-bn * {
+      .lang-bn
+        :not(i):not(.fa):not(.fas):not(.far):not(.fab):not([class*="fa-"]) {
         font-family: "Hind Siliguri", "Outfit", sans-serif !important;
       }
 
