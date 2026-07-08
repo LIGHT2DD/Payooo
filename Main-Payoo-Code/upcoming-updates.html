@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Upcoming Updates</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen max-w-md bg-base-200 mx-auto relative">
+    <header
+      class="border-b-2 border-gray-300 sticky top-0 bg-base-200/95 backdrop-blur-sm z-10"
+    >
+      <section class="w-11/12 mx-auto py-3 flex justify-between items-center">
+        <div class="flex gap-2 items-center">
+          <a href="home.html" class="btn btn-ghost btn-sm btn-circle">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="logo w-[40px]">
+            <img src="assets/logo.png" alt="Payoo Logo" />
+          </div>
+          <div>
+            <h2 class="text-lg font-bold">Upcoming Updates</h2>
+            <p class="text-neutral/50 text-xs">Planned improvements</p>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <section class="w-11/12 mx-auto py-6 space-y-4">
+      <div class="card bg-base-100 shadow rounded-2xl">
+        <div class="card-body">
+          <h3 class="font-bold text-lg mb-3">What’s coming next</h3>
+          <ul class="space-y-3 text-sm">
+            <li class="flex gap-2 items-start">
+              <span class="text-primary">📊</span>
+              <span
+                >Analytics Dashboard - Visual charts and spending insights</span
+              >
+            </li>
+            <li class="flex gap-2 items-start">
+              <span class="text-primary">🎯</span>
+              <span>Financial Goals - Goal tracking with progress bars</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span class="text-primary">📅</span>
+              <span>Recurring Payments - Automatic bill scheduling</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span class="text-primary">🔔</span>
+              <span>Notification System - Real-time alerts and reminders</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span class="text-primary">👤</span>
+              <span>User Profile & Settings - Complete profile management</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow rounded-2xl">
+        <div class="card-body">
+          <h3 class="font-bold text-lg mb-2">Share your feedback</h3>
+          <p class="text-sm text-neutral/60 mb-3">
+            Tell us what you would like to see added next.
+          </p>
+          <textarea
+            class="textarea textarea-bordered w-full"
+            rows="5"
+            placeholder="Write your review or suggestion here..."
+          ></textarea>
+          <button class="btn btn-primary mt-3">Send Feedback</button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

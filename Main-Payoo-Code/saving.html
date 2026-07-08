@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Savings</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+
+      .no-spinner {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+
+      .no-spinner::-webkit-outer-spin-button,
+      .no-spinner::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen max-w-md bg-base-200 mx-auto relative">
+    <div
+      id="toast-container"
+      class="fixed top-4 right-4 z-50 max-w-sm w-full space-y-2"
+    ></div>
+
+    <header
+      class="border-b-2 border-gray-300 sticky top-0 bg-base-200/95 backdrop-blur-sm z-10"
+    >
+      <section class="w-11/12 mx-auto py-3 flex justify-between items-center">
+        <div class="flex gap-2 items-center">
+          <a href="home.html" class="btn btn-ghost btn-sm btn-circle">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="logo w-[40px]">
+            <img src="assets/logo.png" alt="Payoo Logo" />
+          </div>
+          <div class="balance-info">
+            <h2 class="text-xl font-bold">$<span id="balance">0</span></h2>
+            <p class="text-neutral/50 text-xs">Available Balance</p>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <section class="w-11/12 mx-auto py-6">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-piggy-bank text-success"></i>
+        Savings Goals
+      </h2>
+
+      <div class="space-y-4">
+        <!-- Savings Summary -->
+        <div class="card bg-base-100 shadow rounded-2xl">
+          <div class="card-body">
+            <h3 class="font-bold text-lg mb-2">Total Savings</h3>
+            <p class="text-3xl font-bold text-success">
+              $<span id="total-savings">0</span>
+            </p>
+            <progress
+              class="progress progress-success w-full mt-2"
+              value="0"
+              max="100"
+            ></progress>
+          </div>
+        </div>
+
+        <!-- Add Savings Goal -->
+        <div class="card bg-base-100 shadow rounded-2xl">
+          <div class="card-body">
+            <h3 class="font-bold mb-3">Create Savings Goal</h3>
+            <div class="space-y-3">
+              <input
+                id="goal-name"
+                type="text"
+                class="input rounded-full bg-base-200 w-full"
+                placeholder="Goal Name"
+              />
+              <input
+                id="goal-amount"
+                type="number"
+                class="input rounded-full bg-base-200 w-full no-spinner"
+                placeholder="Target Amount"
+              />
+              <button
+                id="add-goal-btn"
+                class="btn btn-success rounded-full w-full"
+              >
+                <i class="fa-solid fa-plus"></i> Add Goal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goals List -->
+        <div id="goals-list" class="space-y-3">
+          <div class="text-center py-4 text-neutral/50">
+            <p>No savings goals yet</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="script/pages/savings.js"></script>
+  </body>
+</html>
