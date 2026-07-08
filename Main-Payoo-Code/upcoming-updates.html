@@ -101,9 +101,34 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const btn = document.getElementById("sendFeedbackBtn");
+
+        function getToastContainer() {
+          let container = document.getElementById("toastContainer");
+          if (!container) {
+            container = document.createElement("div");
+            container.id = "toastContainer";
+            container.className =
+              "fixed top-4 right-4 z-50 flex flex-col items-end gap-2";
+            document.body.appendChild(container);
+          }
+          return container;
+        }
+
+        function showWelcomeToast(message) {
+          const container = getToastContainer();
+          const toast = document.createElement("div");
+          toast.className = "alert alert-success shadow-lg max-w-sm";
+          toast.innerHTML = "<div><span>" + message + "</span></div>";
+          container.appendChild(toast);
+          setTimeout(() => {
+            toast.remove();
+            if (container.children.length === 0) container.remove();
+          }, 3000);
+        }
+
         if (btn) {
           btn.addEventListener("click", function () {
-            alert("Thank you for your feedback");
+            showWelcomeToast("Thank You For Your Feedback");
           });
         }
       });
