@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Calendar</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #f8f7ff;
+        --surface: #ffffff;
+        --card: #f9f8ff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --primary: #7460ff;
+        --primary-soft: rgba(116, 96, 255, 0.14);
+        --border: rgba(116, 96, 255, 0.16);
+        --shadow: 0 24px 80px rgba(34, 60, 80, 0.08);
+      }
+      [data-theme="dark"] {
+        --bg: #0b1220;
+        --surface: #111827;
+        --card: #161c2d;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --primary: #8b5cf6;
+        --primary-soft: rgba(139, 92, 246, 0.16);
+        --border: rgba(139, 92, 246, 0.22);
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        font-family: "Outfit", sans-serif;
+        font-size: 16px;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 0;
+      }
+      .page-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+      }
+      .page-main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+      }
+      .calendar-panel {
+        width: min(100%, 860px);
+        border-radius: 28px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.96),
+          rgba(245, 243, 255, 0.95)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 1.55rem;
+      }
+      [data-theme="dark"] .calendar-panel {
+        background: linear-gradient(
+          180deg,
+          rgba(22, 22, 43, 0.96),
+          rgba(16, 20, 35, 0.95)
+        );
+      }
+      .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .calendar-title {
+        font-size: 1.65rem;
+        font-weight: 800;
+      }
+      .calendar-subtitle {
+        margin-top: 0.35rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .nav-btn {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 16px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        cursor: pointer;
+      }
+      .nav-btn:hover {
+        background: rgba(116, 96, 255, 0.18);
+      }
+      .week-days {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 0.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-top: 1rem;
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      .calendar-day,
+      .empty-cell {
+        min-height: 95px;
+        border-radius: 22px;
+      }
+      .calendar-day {
+        border: 1px solid transparent;
+        background: rgba(116, 96, 255, 0.08);
+        color: inherit;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0.35rem;
+        position: relative;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          background-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .calendar-day:hover {
+        transform: translateY(-2px);
+        background: rgba(116, 96, 255, 0.14);
+        box-shadow: 0 18px 30px rgba(116, 96, 255, 0.08);
+      }
+      .calendar-day.selected {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 18px 30px rgba(116, 96, 255, 0.18);
+      }
+      .calendar-day.today {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 1px rgba(116, 96, 255, 0.2);
+      }
+      .day-number {
+        font-weight: 800;
+        font-size: 1.25rem;
+      }
+      .day-label {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.72rem;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 1.8rem;
+        transform: translateX(-50%);
+        background: rgba(20, 24, 40, 0.92);
+        color: white;
+        padding: 1rem 1.2rem;
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(3, 12, 34, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      .toast.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      @media (max-width: 900px) {
+        .page-main {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="page-header">
+      <a class="back-btn" href="home.html"
+        ><i class="fa-solid fa-arrow-left"></i> Back to dashboard</a
+      >
+    </header>
+
+    <main class="page-main">
+      <section class="calendar-panel">
+        <div class="calendar-header">
+          <button id="prevMonth" class="nav-btn" title="Previous month">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div>
+            <div id="monthYear" class="calendar-title"></div>
+            <div id="selectedDateLabel" class="calendar-subtitle"></div>
+          </div>
+          <button id="nextMonth" class="nav-btn" title="Next month">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="week-days">
+          <span>Sun</span>
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        const monthYearEl = document.getElementById("monthYear");
+        const selectedDateLabel = document.getElementById("selectedDateLabel");
+        const calendarGrid = document.getElementById("calendarGrid");
+        const prevMonthBtn = document.getElementById("prevMonth");
+        const nextMonthBtn = document.getElementById("nextMonth");
+        const toast = document.getElementById("toast");
+
+        let currentDate = new Date();
+        let selectedDate = new Date();
+
+        function pad(value) {
+          return String(value).padStart(2, "0");
+        }
+
+        function formatKey(date) {
+          return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        }
+
+        function formatLabel(date) {
+          return date.toLocaleDateString(undefined, {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+          });
+        }
+
+        function showToast(message) {
+          if (!toast) return;
+          toast.textContent = message;
+          toast.classList.add("visible");
+          window.clearTimeout(toast._timeout);
+          toast._timeout = window.setTimeout(() => {
+            toast.classList.remove("visible");
+          }, 2200);
+        }
+
+        function updateHeader() {
+          monthYearEl.textContent = currentDate.toLocaleDateString(undefined, {
+            month: "long",
+            year: "numeric",
+          });
+          selectedDateLabel.textContent = `Selected: ${formatLabel(selectedDate)}`;
+        }
+
+        function getMonthDays(year, month) {
+          const first = new Date(year, month, 1);
+          const last = new Date(year, month + 1, 0);
+          return { firstDay: first.getDay(), totalDays: last.getDate() };
+        }
+
+        function renderCalendar() {
+          if (!calendarGrid) return;
+          calendarGrid.innerHTML = "";
+          const { firstDay, totalDays } = getMonthDays(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+          );
+          const today = new Date();
+          const todayKey = formatKey(today);
+          const selectedKey = formatKey(selectedDate);
+
+          for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            empty.className = "empty-cell";
+            calendarGrid.appendChild(empty);
+          }
+
+          for (let day = 1; day <= totalDays; day++) {
+            const cellDate = new Date(
+              currentDate.getFullYear(),
+              currentDate.getMonth(),
+              day,
+            );
+            const cellKey = formatKey(cellDate);
+            const dayEl = document.createElement("button");
+            dayEl.type = "button";
+            dayEl.className = "calendar-day";
+            if (cellKey === todayKey) dayEl.classList.add("today");
+            if (cellKey === selectedKey) dayEl.classList.add("selected");
+            dayEl.dataset.date = cellKey;
+            const labelText =
+              cellKey === todayKey
+                ? "Today"
+                : cellKey === selectedKey
+                  ? "Selected"
+                  : "";
+            dayEl.innerHTML = `
+              <span class="day-number">${day}</span>
+              ${labelText ? `<span class="day-label">${labelText}</span>` : ""}
+            `;
+            dayEl.addEventListener("click", () => {
+              selectedDate = cellDate;
+              updateHeader();
+              renderCalendar();
+            });
+            calendarGrid.appendChild(dayEl);
+          }
+        }
+
+        function prevMonth() {
+          currentDate.setMonth(currentDate.getMonth() - 1);
+          renderCalendar();
+          updateHeader();
+        }
+
+        function nextMonth() {
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          renderCalendar();
+          updateHeader();
+        }
+
+        prevMonthBtn.addEventListener("click", prevMonth);
+        nextMonthBtn.addEventListener("click", nextMonth);
+
+        function init() {
+          selectedDate = new Date();
+          currentDate = new Date(selectedDate);
+          updateHeader();
+          renderCalendar();
+        }
+
+        init();
+      })();
+    </script>
+  </body>
+</html>

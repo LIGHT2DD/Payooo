@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | User Profile</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+      :root {
+        --primary: #7460ff;
+        --background: #f8f7ff;
+        --surface: #ffffff;
+        --text: #1a1a2e;
+        --muted: #6b7280;
+        --primary-soft: rgba(116, 96, 255, 0.14);
+      }
+      /* Dark theme variables - respects data-theme attribute on <html> */
+      html[data-theme="dark"] {
+        --primary: #a78bfa;
+        --background: #0b1220;
+        --surface: #0f1724;
+        --text: rgba(255, 255, 255, 0.95);
+        --muted: rgba(255, 255, 255, 0.72);
+        --primary-soft: rgba(167, 139, 250, 0.12);
+      }
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text);
+      }
+      .profile-card {
+        background: var(--surface);
+        border-radius: 28px;
+        box-shadow: 0 20px 50px rgba(116, 96, 255, 0.08);
+        border: 1px solid rgba(116, 96, 255, 0.12);
+      }
+      .profile-card h1,
+      .profile-card h2,
+      .profile-card p {
+        color: var(--text);
+      }
+      .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: var(--muted);
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        border: 1px solid rgba(116, 96, 255, 0.18);
+        border-radius: 16px;
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
+        background: var(--surface);
+        color: var(--text);
+      }
+      .avatar-preview {
+        width: 96px;
+        height: 96px;
+        border-radius: 24px;
+        background: rgba(116, 96, 255, 0.08);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        border: 2px dashed rgba(116, 96, 255, 0.24);
+      }
+      .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .avatar-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .avatar-file-name {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .avatar-file-hint {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .file-picker-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 9999px;
+        padding: 0.6rem 1rem;
+        border: 1px solid rgba(116, 96, 255, 0.2);
+        color: var(--primary);
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .file-picker-label:hover {
+        background: rgba(116, 96, 255, 0.08);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-background mx-auto relative">
+    <div id="app-shell"></div>
+    <section class="w-11/12 mx-auto py-8">
+      <div class="profile-card p-8">
+        <div
+          class="flex flex-col lg:flex-row gap-8 lg:items-center lg:justify-between mb-10"
+        >
+          <div>
+            <p class="text-sm text-muted uppercase tracking-[0.2em] mb-2">
+              Profile
+            </p>
+            <h1 class="text-3xl font-semibold">Manage your account</h1>
+            <p class="text-sm text-muted mt-2 max-w-xl">
+              Change your profile icon, update your display name, and secure
+              your account.
+            </p>
+          </div>
+          <div class="avatar-preview">
+            <img
+              id="profile-avatar-main"
+              src="assets/logo.png"
+              alt="Profile avatar"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-2">
+          <div class="space-y-6">
+            <div class="form-group">
+              <label for="profile-name">Display name</label>
+              <input id="profile-name" type="text" placeholder="Your name" />
+            </div>
+
+            <div class="form-group">
+              <label for="profile-password">Change password</label>
+              <input
+                id="profile-password"
+                type="password"
+                placeholder="New password"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="profile-pin">4-digit PIN</label>
+              <input
+                id="profile-pin"
+                type="password"
+                inputmode="numeric"
+                pattern="\d{4}"
+                maxlength="4"
+                placeholder="Enter 4-digit PIN"
+              />
+              <p class="text-xs text-muted mt-1">
+                Only numbers are allowed. PIN must be exactly 4 digits.
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label for="profile-avatar-file">Choose icon</label>
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-4">
+                  <div class="avatar-preview">
+                    <img
+                      id="profile-avatar-preview"
+                      src="assets/logo.png"
+                      alt="Profile avatar"
+                    />
+                  </div>
+                  <div class="avatar-controls">
+                    <label for="profile-avatar-file" class="file-picker-label">
+                      <i class="fa-solid fa-upload"></i>
+                      Choose icon
+                    </label>
+                    <span id="avatar-file-name" class="avatar-file-name"
+                      >No file selected</span
+                    >
+                    <span class="avatar-file-hint">PNG, JPG up to 2MB.</span>
+                  </div>
+                </div>
+                <input
+                  id="profile-avatar-file"
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  hidden
+                />
+              </div>
+            </div>
+
+             <div class="flex gap-3">
+               <button id="save-profile" class="btn btn-primary flex-1">
+                 Save changes
+               </button>
+             </div>
+           </div>
+
+          <div class="space-y-6">
+            <div class="form-group">
+              <label for="profile-email">Email</label>
+              <input
+                id="profile-email"
+                type="email"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div class="form-group">
+              <label for="profile-notes">Profile notes</label>
+              <textarea
+                id="profile-notes"
+                rows="6"
+                class="textarea textarea-bordered w-full rounded-3xl"
+                placeholder="Optional note about your profile"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm border border-base-200 mt-6">
+        <div class="card-body">
+          <h2 class="card-title text-base"><i class="fa-solid fa-hard-drive text-primary"></i> Demo data</h2>
+          <p class="text-sm text-neutral/60">Payoo’s demo information is stored only in this browser. It is not synced to a bank or cloud account.</p>
+          <div class="card-actions justify-end"><button id="reset-demo-data" type="button" class="btn btn-outline btn-error btn-sm">Reset demo data</button></div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="script/desktop-shell.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const nameInput = document.getElementById("profile-name");
+        const emailInput = document.getElementById("profile-email");
+        const avatarImages = [
+          document.getElementById("profile-avatar-main"),
+          document.getElementById("profile-avatar-preview"),
+        ].filter(Boolean);
+        const avatarFile = document.getElementById("profile-avatar-file");
+        const saveButton = document.getElementById("save-profile");
+        const resetDemoData = document.getElementById("reset-demo-data");
+
+        const user = JSON.parse(sessionStorage.getItem("payoo_user") || "null");
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+        if (user) {
+          nameInput.value = user.name || "";
+          emailInput.value = user.email || "";
+          if (user.avatar) {
+            avatarImages.forEach((image) => (image.src = user.avatar));
+          }
+        }
+
+        const profilePinInput = document.getElementById("profile-pin");
+        const avatarFileName = document.getElementById("avatar-file-name");
+
+        profilePinInput.addEventListener("input", function () {
+          this.value = this.value.replace(/\D/g, "").slice(0, 4);
+        });
+
+        avatarFile.addEventListener("change", function () {
+          const file = this.files && this.files[0];
+          if (!file) return;
+
+          if (!/^(image\/png|image\/jpeg)$/.test(file.type)) {
+            alert("Please select a PNG or JPG image.");
+            this.value = "";
+            return;
+          }
+
+          if (file.size > 2 * 1024 * 1024) {
+            alert("Image must be smaller than 2MB.");
+            this.value = "";
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            avatarImages.forEach((image) => (image.src = event.target.result));
+            avatarFileName.textContent = file.name;
+          };
+          reader.readAsDataURL(file);
+        });
+
+        saveButton.addEventListener("click", function () {
+          const pinValue = profilePinInput.value.trim();
+          if (pinValue && !/^\d{4}$/.test(pinValue)) {
+            alert("PIN must be exactly 4 digits.");
+            profilePinInput.focus();
+            return;
+          }
+
+          const updatedUser = Object.assign(user || {}, {
+            name: nameInput.value,
+            email: emailInput.value,
+            avatar: avatarImages[0]?.src || user.avatar || "",
+            password:
+              document.getElementById("profile-password").value ||
+              user?.password ||
+              "",
+            pin: pinValue || user?.pin || "",
+            notes: document.getElementById("profile-notes").value || "",
+          });
+          sessionStorage.setItem("payoo_user", JSON.stringify(updatedUser));
+          // Keep profile details aligned with the persisted mock account so a
+          // later sign-in does not replace these saved changes.
+          try {
+            const users = JSON.parse(
+              localStorage.getItem("payoo_mock_users") || "{}",
+            );
+            const phone = Object.keys(users).find(
+              (key) => users[key].id === updatedUser.id,
+            );
+            if (phone) {
+              users[phone] = Object.assign({}, users[phone], updatedUser);
+              localStorage.setItem("payoo_mock_users", JSON.stringify(users));
+            }
+          } catch {
+            // The profile update remains available for the current session.
+          }
+          alert("Profile changes saved.");
+        });
+
+        resetDemoData?.addEventListener("click", function () {
+          if (!confirm("Reset all Payoo demo data on this browser? This signs you out and cannot be undone.")) return;
+          Object.keys(localStorage).filter((key) => key.startsWith("payoo") || ["savings_goals", "saved_bills", "bill_reminders", "recent_contacts", "donations"].includes(key)).forEach((key) => localStorage.removeItem(key));
+          sessionStorage.removeItem("payoo_token");
+          sessionStorage.removeItem("payoo_user");
+          window.location.href = "index.html";
+        });
+      });
+    </script>
+  </body>
+</html>

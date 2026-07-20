@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Upcoming Updates</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+
+      :root {
+        --primary: #7460ff;
+        --primary-dark: #0e005f;
+        --accent: #a78bfa;
+        --background: #f8f7ff;
+        --surface: #ffffff;
+        --text: #1a1a2e;
+        --muted: #6b7280;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --primary-gradient: linear-gradient(135deg, #7460ff, #a78bfa);
+        --primary-soft: rgba(116, 96, 255, 0.14);
+        --primary-border: rgba(116, 96, 255, 0.16);
+        --surface-shadow: 0 4px 20px rgba(116, 96, 255, 0.1);
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text);
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .text-muted {
+        color: var(--muted);
+      }
+
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+      }
+
+      .card-custom {
+        background: var(--surface);
+        border: 1px solid rgba(116, 96, 255, 0.12);
+        box-shadow: 0 14px 40px rgba(116, 96, 255, 0.08);
+        border-radius: 28px;
+      }
+
+      .card-custom .card-body {
+        padding: 1.75rem;
+      }
+
+      .premium-card-highlight {
+        background: linear-gradient(
+          135deg,
+          rgba(116, 96, 255, 1),
+          rgba(167, 139, 250, 0.95)
+        );
+        color: white;
+        border-radius: 32px;
+        box-shadow: 0 24px 80px rgba(116, 96, 255, 0.18);
+      }
+
+      .premium-card-highlight h1,
+      .premium-card-highlight p {
+        color: white;
+      }
+
+      .premium-card-highlight .btn {
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .btn:active,
+      button:active {
+        background-color: rgba(116, 96, 255, 0.18) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+        transform: scale(0.98);
+      }
+
+      [data-theme="dark"] body,
+      [data-theme="dark"] .text-neutral,
+      [data-theme="dark"] .text-neutral\/50,
+      [data-theme="dark"] .text-neutral\/60,
+      [data-theme="dark"] .text-neutral\/70,
+      [data-theme="dark"] p {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-surface mx-auto relative">
+    <div id="app-shell"></div>
+    <header
+      class="border-b border-primary-soft sticky top-0 bg-surface/95 backdrop-blur-sm z-10"
+    >
+      <section class="w-11/12 mx-auto py-3 flex justify-between items-center">
+        <div class="flex gap-3 items-center">
+          <a href="home.html" class="btn btn-ghost btn-sm btn-circle">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="logo w-[50px] relative">
+            <img
+              src="assets/logo.png"
+              alt="Payoo Logo"
+              class="w-full rounded-full shadow-sm"
+            />
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-sparkles text-primary text-xl"></i>
+              <h2 class="text-lg font-semibold text-slate-900">
+                Upcoming Updates
+              </h2>
+            </div>
+            <p class="text-muted text-xs">Planned improvements</p>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <section class="w-11/12 mx-auto py-6 space-y-6">
+      <div class="premium-card-highlight rounded-3xl p-6">
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+        >
+          <div>
+            <p class="text-white/80 text-sm font-medium">Stay in the loop</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-white">
+              Upcoming product updates
+            </h1>
+            <p class="text-white/70 text-sm mt-1">
+              We're rolling out new Payoo features to keep your finances
+              effortless.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a
+              href="presentation.html"
+              class="btn bg-white text-primary hover:bg-white/90 border-0 rounded-full text-xs px-4 py-2"
+            >
+              <i class="fa-solid fa-presentation-screen mr-1"></i>
+              View presentation
+            </a>
+            <a
+              href="#sendFeedbackBtn"
+              class="btn bg-white/20 hover:bg-white/30 text-white border-0 rounded-full text-xs px-4 py-2"
+            >
+              Send feedback
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-custom">
+        <div class="card-body">
+          <h3 class="font-semibold text-lg text-slate-900 mb-3">
+            What's coming next
+          </h3>
+          <ul class="space-y-3 text-sm text-muted">
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-shield-halved"></i></span>
+              <span>
+                <strong>Two-Factor Authentication</strong> - Enhanced security with SMS and authenticator app support
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-credit-card"></i></span>
+              <span>
+                <strong>Card Management</strong> - Virtual and physical card controls, spending limits, and instant freeze/unfreeze
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-key"></i></span>
+              <span>
+                <strong>PIN Change</strong> - Secure PIN update from user profile with verification
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-filter"></i></span>
+              <span>
+                <strong>Advanced Transaction Filters</strong> - Filter by date range, amount, type, and custom tags
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-globe"></i></span>
+              <span>
+                <strong>Multi-currency Accounts</strong> - Hold and transact in multiple currencies with automatic conversion
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-clock"></i></span>
+              <span>
+                <strong>Scheduled Transfers</strong> - Set up recurring payments and future-dated transfers
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-mobile-screen-button"></i></span>
+              <span>
+                <strong>Mobile App Integration</strong> - Native mobile apps for iOS and Android with biometric login
+              </span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-primary mt-1"><i class="fa-solid fa-chart-pie"></i></span>
+              <span>
+                <strong>Spending Insights</strong> - AI-powered spending analysis with category breakdowns and trends
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-custom">
+        <div class="card-body">
+          <h3 class="font-semibold text-lg text-slate-900 mb-2">
+            Share your feedback
+          </h3>
+          <p class="text-sm text-muted mb-3">
+            Tell us what you would like to see added next.
+          </p>
+          <textarea
+            id="feedback-text"
+            class="textarea textarea-bordered textarea-lg w-full rounded-3xl border-primary-soft/40"
+            rows="5"
+            placeholder="Write your review or suggestion here..."
+          ></textarea>
+          <button
+            id="sendFeedbackBtn"
+            class="btn btn-primary mt-3 w-full max-w-xs"
+          >
+            <i class="fa-solid fa-paper-plane"></i> Send Feedback
+          </button>
+        </div>
+      </div>
+    </section>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("sendFeedbackBtn");
+        const textarea = document.getElementById("feedback-text");
+
+        function createToastContainer() {
+          const container = document.createElement("div");
+          container.id = "toast-container";
+          container.className =
+            "fixed top-4 right-4 z-50 max-w-sm w-full space-y-2";
+          document.body.appendChild(container);
+          return container;
+        }
+
+        function displaySuccess(message) {
+          const toastContainer =
+            document.getElementById("toast-container") ||
+            createToastContainer();
+          const toast = document.createElement("div");
+          toast.className = "alert alert-success shadow-lg animate-fade-in";
+          toast.innerHTML = `
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()" class="btn btn-sm btn-ghost">✕</button>
+          `;
+          toastContainer.appendChild(toast);
+
+          setTimeout(() => {
+            if (toast.parentElement) toast.remove();
+          }, 5000);
+        }
+
+        if (btn) {
+          btn.addEventListener("click", function () {
+            const feedback = textarea.value.trim();
+            if (feedback) {
+              // Save feedback to localStorage
+              const feedbacks = JSON.parse(localStorage.getItem("user_feedbacks") || "[]");
+              feedbacks.unshift({
+                id: Date.now(),
+                text: feedback,
+                date: new Date().toISOString()
+              });
+              localStorage.setItem("user_feedbacks", JSON.stringify(feedbacks.slice(0, 50)));
+              textarea.value = "";
+            }
+            displaySuccess("Thank You For Your Feedback");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

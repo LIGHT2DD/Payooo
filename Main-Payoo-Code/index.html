@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Login</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+
+    <!-- tailwind+daisy  -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- icons  -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --primary: #7460ff;
+        --primary-dark: #0e005f;
+        --accent: #a78bfa;
+        --background: #f8f7ff;
+        --surface: #ffffff;
+        --text: #1a1a2e;
+        --muted: #6b7280;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --primary-gradient: linear-gradient(135deg, #7460ff, #a78bfa);
+        --primary-soft: rgba(116, 96, 255, 0.12);
+        --primary-border: rgba(116, 96, 255, 0.16);
+      }
+
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+
+      .input-error {
+        border-color: #ef4444 !important;
+        animation: shake 0.3s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+      }
+
+      .btn:active,
+      button:active {
+        background-color: var(--primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
+      }
+
+      [data-theme="dark"] body,
+      [data-theme="dark"] .text-neutral,
+      [data-theme="dark"] .text-neutral\/50,
+      [data-theme="dark"] .text-neutral\/60,
+      [data-theme="dark"] .text-neutral\/70,
+      [data-theme="dark"] p {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      .login-page {
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(116, 96, 255, 0.18),
+            transparent 32rem
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(167, 139, 250, 0.16),
+            transparent 30rem
+          ),
+          var(--background);
+      }
+
+      [data-theme="dark"] .login-page {
+        background:
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(116, 96, 255, 0.18),
+            transparent 32rem
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(167, 139, 250, 0.16),
+            transparent 30rem
+          ),
+          #0b0b17;
+      }
+
+      .login-orb {
+        filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .login-brand {
+        width: clamp(11rem, 18vw, 15rem);
+        filter: drop-shadow(0 10px 14px rgba(116, 96, 255, 0.16));
+        transition: transform 0.2s ease;
+      }
+
+      .login-brand:hover {
+        transform: translateY(-2px);
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(116, 96, 255, 0.16);
+        box-shadow: 0 16px 40px rgba(116, 96, 255, 0.12);
+      }
+
+      [data-theme="dark"] .login-card {
+        background: rgba(22, 22, 43, 0.95);
+        border-color: rgba(116, 96, 255, 0.22);
+        box-shadow: 0 16px 40px rgba(2, 6, 23, 0.35);
+      }
+
+      .login-input {
+        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(116, 96, 255, 0.15);
+        transition: all 0.2s ease;
+      }
+
+      .login-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(116, 96, 255, 0.18);
+      }
+
+      [data-theme="dark"] .login-input {
+        background: rgba(15, 23, 42, 0.85);
+        border-color: rgba(116, 96, 255, 0.22);
+      }
+
+      .login-btn {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        box-shadow: 0 8px 24px rgba(116, 96, 255, 0.25);
+      }
+
+      .login-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(116, 96, 255, 0.33);
+      }
+
+      .login-badge {
+        background: rgba(116, 96, 255, 0.12);
+        color: var(--primary);
+        border: 1px solid rgba(116, 96, 255, 0.18);
+      }
+
+      .text-primary {
+        color: var(--primary) !important;
+      }
+
+      .text-muted {
+        color: var(--muted) !important;
+      }
+
+      .border-primary-soft {
+        border-color: rgba(116, 96, 255, 0.16) !important;
+      }
+
+      .bg-primary-soft {
+        background: rgba(116, 96, 255, 0.08) !important;
+      }
+
+      @keyframes float {
+        50% {
+          transform: translateY(-12px);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="login-page text-base-content">
+    <header
+      class="w-full px-5 sm:px-8 py-5 relative flex justify-center items-center"
+    >
+      <a href="index.html" class="block" aria-label="Payoo home"
+        ><img src="assets/Logo-full.png" alt="Payoo" class="login-brand"
+      /></a>
+      <button
+        id="login-theme-toggle"
+        class="btn btn-ghost btn-sm btn-circle absolute right-5 sm:right-8"
+        title="Toggle theme"
+      >
+        <i class="fa-regular fa-lightbulb"></i>
+      </button>
+    </header>
+
+    <main
+      class="w-11/12 max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-center py-10 lg:py-16 min-h-[calc(100vh-88px)]"
+    >
+      <section class="hidden lg:block space-y-6">
+        <span class="login-badge badge">Simple. Secure. Always ready.</span>
+        <h1 class="text-5xl xl:text-6xl font-bold leading-tight">
+          Your money,<br /><span class="text-primary">in motion.</span>
+        </h1>
+        <p class="text-lg text-muted max-w-lg">
+          Manage payments, transfers, savings, and everyday financial goals from
+          one calm workspace.
+        </p>
+        <div class="grid grid-cols-3 gap-3 max-w-lg">
+          <div class="card bg-white/80 shadow-sm border border-primary-soft">
+            <div class="card-body p-4">
+              <i class="fa-solid fa-bolt text-primary text-xl"></i>
+              <p class="font-semibold mt-2">Fast transfers</p>
+            </div>
+          </div>
+          <div class="card bg-white/80 shadow-sm border border-primary-soft">
+            <div class="card-body p-4">
+              <i class="fa-solid fa-shield-halved text-primary text-xl"></i>
+              <p class="font-semibold mt-2">Protected</p>
+            </div>
+          </div>
+          <div class="card bg-white/80 shadow-sm border border-primary-soft">
+            <div class="card-body p-4">
+              <i class="fa-solid fa-chart-line text-primary text-xl"></i>
+              <p class="font-semibold mt-2">Clear insights</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="w-full max-w-md mx-auto">
+        <div class="card login-card backdrop-blur rounded-3xl">
+          <div class="card-body p-6 sm:p-8">
+            <p class="text-sm text-primary font-semibold">WELCOME BACK</p>
+            <h2 class="text-3xl font-bold">Sign in to Payoo</h2>
+            <p class="text-sm text-muted mb-2">
+              Enter your account details to continue.
+            </p>
+            <form id="login-form" autocomplete="off">
+              <fieldset class="fieldset">
+                <label class="label text-neutral font-bold">
+                  <i class="fa-solid fa-phone"></i>
+                  Mobile Number
+                </label>
+                <input
+                  id="input-number"
+                  maxlength="11"
+                  minlength="11"
+                  type="tel"
+                  class="input rounded-full login-input w-full"
+                  value="01234567890"
+                  placeholder="Enter your 11 digit Number"
+                  autocomplete="username"
+                  required
+                />
+                <p class="text-xs text-neutral/50 mt-1">
+                  Enter 11 digit phone number
+                </p>
+
+                <br />
+
+                <label class="label text-neutral font-bold">
+                  <i class="fa-solid fa-lock"></i>
+                  4 Digit Pin
+                </label>
+                <input
+                  id="input-pin"
+                  type="password"
+                  maxlength="4"
+                  class="input rounded-full login-input w-full"
+                  placeholder="Enter 4 Digit Pin"
+                  autocomplete="current-password"
+                  required
+                />
+                <p class="text-xs text-neutral/50 mt-1">4 digit numeric PIN</p>
+
+                <button
+                  id="login-btn"
+                  type="submit"
+                  class="btn login-btn mt-4 rounded-full"
+                >
+                  Login
+                </button>
+
+                <p class="text-xs text-center text-neutral/50 mt-2">
+                  Demo: 01234567890 / PIN: 1234
+                </p>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Load scripts as ES Modules -->
+    <script type="module" src="script/login.js"></script>
+  </body>
+</html>

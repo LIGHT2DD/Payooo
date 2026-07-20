@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Send Money</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+
+      .input-error {
+        border-color: #ef4444 !important;
+        animation: shake 0.3s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+      }
+
+      .contact-item {
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .contact-item:hover {
+        background-color: oklch(var(--p) / 0.05);
+        transform: translateX(4px);
+      }
+
+      .contact-item.selected {
+        background-color: oklch(var(--p) / 0.1);
+        border: 2px solid oklch(var(--p));
+      }
+
+      .quick-amount-btn {
+        transition: all 0.2s ease;
+      }
+
+      .quick-amount-btn:hover {
+        background-color: oklch(var(--p) / 0.1);
+        transform: translateY(-2px);
+      }
+
+      .quick-amount-btn.selected {
+        background-color: oklch(var(--p));
+        color: oklch(var(--pc));
+      }
+
+      /* Button press effect - soft blue */
+      .btn:active,
+      button:active,
+      .contact-item:active,
+      .quick-amount-btn:active {
+        background-color: rgb(59, 130, 246) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
+      }
+
+      /* Dark mode text contrast */
+      [data-theme="dark"] body,
+      [data-theme="dark"] .text-neutral,
+      [data-theme="dark"] .text-neutral\/50,
+      [data-theme="dark"] .text-neutral\/60,
+      [data-theme="dark"] .text-neutral\/70,
+      [data-theme="dark"] p {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen max-w-md bg-base-200 mx-auto relative">
+    <div id="app-shell"></div>
+    <div
+      id="toast-container"
+      class="fixed top-4 right-4 z-50 max-w-sm w-full space-y-2"
+    ></div>
+
+    <!-- Header -->
+    <header
+      class="border-b-2 border-gray-300 sticky top-0 bg-base-200/95 backdrop-blur-sm z-10"
+    >
+      <section class="w-11/12 mx-auto py-3 flex justify-between items-center">
+        <div class="flex gap-2 items-center">
+          <a href="home.html" class="btn btn-ghost btn-sm btn-circle">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="logo w-[40px]">
+            <img src="assets/logo.png" alt="Payoo Logo" />
+          </div>
+          <div class="balance-info">
+            <h2 class="text-xl font-bold">$<span id="balance">0</span></h2>
+            <p class="text-neutral/50 text-xs">Available Balance</p>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <!-- Main Content -->
+    <section class="w-11/12 mx-auto py-6">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-paper-plane text-primary"></i>
+        Send Money
+      </h2>
+
+      <div class="space-y-4">
+        <!-- Recent Contacts -->
+        <div class="card bg-base-100 shadow rounded-2xl">
+          <div class="card-body">
+            <h3 class="font-bold mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-address-book text-primary"></i>
+              Recent Contacts
+            </h3>
+            <div id="contacts-list" class="space-y-2">
+              <div class="text-center py-4 text-neutral/50">
+                <i class="fa-solid fa-users text-2xl mb-2 block"></i>
+                <p class="text-sm">No recent contacts</p>
+                <p class="text-xs mt-1">
+                  Your frequent recipients will appear here
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Send Money Form -->
+        <div class="card bg-base-100 shadow rounded-2xl">
+          <div class="card-body">
+            <h3 class="font-bold mb-3">Send Money</h3>
+
+            <div class="space-y-3">
+              <!-- Recipient Phone -->
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-phone"></i>
+                  Recipient Phone Number
+                </label>
+                <input
+                  id="recipient-number"
+                  maxlength="11"
+                  minlength="11"
+                  type="tel"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Enter recipient 11 digit number"
+                />
+                <p
+                  id="recipient-name-preview"
+                  class="text-xs text-success mt-1 hidden"
+                ></p>
+              </div>
+
+              <!-- Amount -->
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-dollar-sign"></i>
+                  Amount to Send
+                </label>
+                <input
+                  id="send-amount"
+                  type="text"
+                  inputmode="decimal"
+                  pattern="[0-9]*[.]?[0-9]*"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Enter amount to send"
+                />
+                <!-- Quick Amount Buttons -->
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                  <button
+                    class="quick-amount-btn btn btn-xs btn-ghost bg-base-200"
+                    data-amount="50"
+                  >
+                    $50
+                  </button>
+                  <button
+                    class="quick-amount-btn btn btn-xs btn-ghost bg-base-200"
+                    data-amount="100"
+                  >
+                    $100
+                  </button>
+                  <button
+                    class="quick-amount-btn btn btn-xs btn-ghost bg-base-200"
+                    data-amount="500"
+                  >
+                    $500
+                  </button>
+                  <button
+                    class="quick-amount-btn btn btn-xs btn-ghost bg-base-200"
+                    data-amount="1000"
+                  >
+                    $1000
+                  </button>
+                </div>
+              </div>
+
+              <!-- Optional Message -->
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-message"></i>
+                  Message (Optional)
+                </label>
+                <input
+                  id="send-message"
+                  type="text"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Add a message for recipient"
+                  maxlength="50"
+                />
+              </div>
+
+              <!-- PIN -->
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-lock"></i>
+                  4 Digit Pin
+                </label>
+                <input
+                  id="send-pin"
+                  type="password"
+                  maxlength="4"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Enter 4 Digit Pin"
+                />
+              </div>
+
+              <!-- Summary Card -->
+              <div
+                id="transfer-summary"
+                class="bg-base-200 rounded-xl p-4 hidden"
+              >
+                <h4 class="font-bold text-sm mb-2">Transfer Summary</h4>
+                <div class="space-y-1 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-neutral/50">Amount</span>
+                    <span id="summary-amount" class="font-bold"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-neutral/50">Fee</span>
+                    <span class="text-success font-bold">Free</span>
+                  </div>
+                  <div
+                    class="flex justify-between border-t border-neutral/20 pt-1 mt-1"
+                  >
+                    <span class="font-bold">Total</span>
+                    <span
+                      id="summary-total"
+                      class="font-bold text-primary"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Send Button -->
+              <button
+                id="send-money-btn"
+                class="btn btn-primary rounded-full w-full mt-2"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                Send Money
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Transfers -->
+        <div class="card bg-base-100 shadow rounded-2xl">
+          <div class="card-body">
+            <h3 class="font-bold mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+              Recent Transfers
+            </h3>
+            <div id="recent-transfers" class="space-y-2">
+              <div class="text-center py-4 text-neutral/50">
+                <p class="text-sm">No recent transfers</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="script/desktop-shell.js"></script>
+    <script type="module" src="script/pages/send-money.js"></script>
+  </body>
+</html>

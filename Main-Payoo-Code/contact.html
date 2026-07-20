@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payoo | Contacts</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("payoo_theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+      } catch (error) {
+        console.warn("Theme load failed:", error);
+      }
+    </script>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      * {
+        font-family: "Outfit", sans-serif;
+      }
+
+      :root {
+        --primary: #7460ff;
+        --primary-dark: #0e005f;
+        --accent: #a78bfa;
+        --background: #f8f7ff;
+        --surface: #ffffff;
+        --text: #1a1a2e;
+        --muted: #6b7280;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --primary-gradient: linear-gradient(135deg, #7460ff, #a78bfa);
+        --primary-soft: rgba(116, 96, 255, 0.12);
+        --primary-border: rgba(116, 96, 255, 0.16);
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text);
+      }
+
+      .text-muted {
+        color: var(--muted);
+      }
+
+      .card-custom {
+        background: var(--surface);
+        border: 1px solid var(--primary-border);
+        box-shadow: 0 14px 40px rgba(116, 96, 255, 0.08);
+        border-radius: 28px;
+      }
+
+      .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: var(--primary-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: var(--primary);
+      }
+
+      .contact-item {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .contact-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(116, 96, 255, 0.12);
+      }
+
+      .send-money-btn {
+        transition: all 0.2s ease;
+      }
+
+      .send-money-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(116, 96, 255, 0.25);
+      }
+
+      .btn:active,
+      button:active {
+        background-color: var(--primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(0.98);
+      }
+
+      [data-theme="dark"] body,
+      [data-theme="dark"] .text-neutral,
+      [data-theme="dark"] .text-neutral\/50,
+      [data-theme="dark"] .text-neutral\/60,
+      [data-theme="dark"] .text-neutral\/70,
+      [data-theme="dark"] p {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      [data-theme="dark"] .card-custom {
+        background: #161c2d;
+        border-color: rgba(139, 92, 246, 0.22);
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-base-200 mx-auto relative">
+    <div id="app-shell"></div>
+    <header
+      class="border-b-2 border-gray-300 sticky top-0 bg-base-200/95 backdrop-blur-sm z-10"
+    >
+      <section class="w-11/12 mx-auto py-3 flex justify-between items-center">
+        <div class="flex gap-2 items-center">
+          <a href="home.html" class="btn btn-ghost btn-sm btn-circle">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="logo w-[40px]">
+            <img src="assets/logo.png" alt="Payoo Logo" />
+          </div>
+          <div class="balance-info">
+            <h2 class="text-xl font-bold">$<span id="balance">0</span></h2>
+            <p class="text-neutral/50 text-xs">Available Balance</p>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <section class="w-11/12 mx-auto py-6">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-address-book text-primary"></i>
+        My Contacts
+      </h2>
+
+      <!-- Add Contact Form -->
+      <div class="card card-custom shadow rounded-2xl mb-4">
+        <div class="card-body">
+          <h3 class="font-bold mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-user-plus text-primary"></i>
+            Add New Contact
+          </h3>
+          <form id="add-contact-form" class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-user"></i>
+                  Contact Name
+                </label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Enter contact name"
+                  required
+                />
+              </div>
+              <div>
+                <label class="label text-neutral font-bold text-sm">
+                  <i class="fa-solid fa-phone"></i>
+                  Phone Number
+                </label>
+                <input
+                  id="contact-phone"
+                  type="tel"
+                  class="input rounded-full bg-base-200 w-full"
+                  placeholder="Enter phone number"
+                  required
+                  maxlength="11"
+                />
+              </div>
+            </div>
+            <button
+              id="add-contact-btn"
+              type="submit"
+              class="btn btn-primary rounded-full"
+            >
+              <i class="fa-solid fa-plus"></i>
+              Add Contact
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Contacts List -->
+      <div class="card card-custom shadow rounded-2xl">
+        <div class="card-body">
+          <h3 class="font-bold mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-users text-primary"></i>
+            Saved Contacts
+          </h3>
+          <div id="contacts-list" class="space-y-3">
+            <div class="text-center py-4 text-neutral/50">
+              <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 block"></i>
+              <p class="text-sm">Loading contacts...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="script/desktop-shell.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const contactsList = document.getElementById("contacts-list");
+        const addContactForm = document.getElementById("add-contact-form");
+
+        // Load contacts from localStorage
+        function loadContacts() {
+          const contacts = JSON.parse(localStorage.getItem("payoo_contacts") || "[]");
+          if (contacts.length === 0) {
+            contactsList.innerHTML = `
+              <div class="text-center py-4 text-neutral/50">
+                <i class="fa-solid fa-user-group text-2xl mb-2 block"></i>
+                <p class="text-sm">No contacts saved yet</p>
+                <p class="text-xs mt-1">Add contacts above to use in Send Money</p>
+              </div>
+            `;
+            return;
+          }
+
+          contactsList.innerHTML = contacts
+            .map(
+              (contact) => `
+            <div class="contact-item flex items-center justify-between p-3 bg-base-200 rounded-xl" data-contact-id="${contact.id}">
+              <div class="flex items-center gap-3">
+                <div class="contact-icon">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-sm">${contact.name}</p>
+                  <p class="text-xs text-muted">${contact.phone}</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button class="send-money-btn btn btn-xs btn-primary rounded-full" data-phone="${contact.phone}" title="Send Money to ${contact.name}">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+                <button class="delete-contact-btn btn btn-ghost btn-xs text-error" data-contact-id="${contact.id}" title="Delete">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `
+            )
+            .join("");
+
+          // Add event listeners to send money buttons
+          document.querySelectorAll(".send-money-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const phone = btn.dataset.phone;
+              window.location.href = `send-money.html?phone=${encodeURIComponent(phone)}`;
+            });
+          });
+
+          // Add event listeners to delete buttons
+          document.querySelectorAll(".delete-contact-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const id = btn.dataset.contactId;
+              if (confirm("Delete this contact?")) {
+                deleteContact(id);
+              }
+            });
+          });
+        }
+
+        // Add new contact
+        function addContact(name, phone) {
+          const contacts = JSON.parse(localStorage.getItem("payoo_contacts") || "[]");
+          contacts.push({
+            id: Date.now(),
+            name: name,
+            phone: phone,
+            dateAdded: new Date().toISOString(),
+          });
+          localStorage.setItem("payoo_contacts", JSON.stringify(contacts));
+          loadContacts();
+        }
+
+        // Delete contact
+        function deleteContact(id) {
+          let contacts = JSON.parse(localStorage.getItem("payoo_contacts") || "[]");
+          contacts = contacts.filter((c) => c.id !== parseInt(id));
+          localStorage.setItem("payoo_contacts", JSON.stringify(contacts));
+          loadContacts();
+        }
+
+        // Form submit
+        if (addContactForm) {
+          addContactForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("contact-name").value.trim();
+            const phone = document.getElementById("contact-phone").value.trim();
+
+            if (name && phone) {
+              addContact(name, phone);
+              addContactForm.reset();
+              showToast("Contact added successfully!");
+            }
+          });
+        }
+
+        // Toast notification
+        function showToast(message) {
+          const toast = document.createElement("div");
+          toast.className = "alert alert-success fixed top-4 right-4 z-50 animate-fade-in";
+          toast.innerHTML = `
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()" class="btn btn-sm btn-ghost">✕</button>
+          `;
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Initial load
+        loadContacts();
+      });
+    </script>
+  </body>
+</html>
