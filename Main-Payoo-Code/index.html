@@ -142,6 +142,47 @@
           #0b0b17;
       }
 
+      [data-theme="dark"] .login-card,
+      [data-theme="dark"] .login-card * {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      [data-theme="dark"] .login-card .text-muted,
+      [data-theme="dark"] .login-card .text-neutral,
+      [data-theme="dark"] .login-card .label,
+      [data-theme="dark"] .login-card .label.text-neutral,
+      [data-theme="dark"] .login-card .text-xs {
+        color: rgba(255, 255, 255, 0.72) !important;
+      }
+
+      [data-theme="dark"] .login-input::placeholder {
+        color: rgba(255, 255, 255, 0.68) !important;
+      }
+
+      [data-theme="dark"] .login-btn {
+        color: #ffffff !important;
+      }
+
+      [data-theme="dark"] #login-theme-toggle,
+      [data-theme="dark"] #login-theme-toggle i {
+        color: #f8fafc !important;
+      }
+
+      [data-theme="dark"] #login-theme-toggle.btn-ghost {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+
+      [data-theme="dark"] .login-card .label,
+      [data-theme="dark"] .login-card .text-xs,
+      [data-theme="dark"] .login-card .text-muted {
+        color: rgba(255, 255, 255, 0.82) !important;
+      }
+
+      [data-theme="dark"] .login-input {
+        color: #f8fafc !important;
+      }
+
       .login-orb {
         filter: blur(1px);
         animation: float 6s ease-in-out infinite;
@@ -167,6 +208,22 @@
         background: rgba(22, 22, 43, 0.95);
         border-color: rgba(116, 96, 255, 0.22);
         box-shadow: 0 16px 40px rgba(2, 6, 23, 0.35);
+      }
+
+      [data-theme="dark"] .login-page .card.bg-white\/80 {
+        background: rgba(15, 23, 42, 0.9) !important;
+        border-color: rgba(116, 96, 255, 0.16) !important;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18) !important;
+      }
+
+      [data-theme="dark"] .login-page .card.bg-white\/80 .card-body {
+        color: rgba(255, 255, 255, 0.95) !important;
+      }
+
+      [data-theme="dark"] .login-badge {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #f8fafc !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
       }
 
       .login-input {
@@ -225,6 +282,7 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="assets/responsive.css" />
   </head>
 
   <body class="login-page text-base-content">
