@@ -183,7 +183,8 @@ Open [presentation.html](presentation.html) in a browser to present the project.
 ## Author
 
 **Project:** Payoo Mobile Bank
-
-**Course:** Programming Hero
+**Name:** Sabber Rahman
+**Id:**B220102018
+**Dept:**ICT
 
 Replace this section with your name, student ID, batch, and submission date before submitting.

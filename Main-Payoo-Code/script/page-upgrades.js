@@ -7,24 +7,37 @@ const drafts = {
   "pay-bill.html": ["bill-account", "bill-amount", "bill-due-date"],
 };
 
-function draftKey() { return `payoo:draft:${location.pathname.split("/").pop()}`; }
+function draftKey() {
+  return `payoo:draft:${location.pathname.split("/").pop()}`;
+}
 
 function setupDrafts() {
   const ids = drafts[location.pathname.split("/").pop()];
   if (!ids) return;
   let stored = {};
-  try { stored = JSON.parse(localStorage.getItem(draftKey()) || "{}"); } catch {}
+  try {
+    stored = JSON.parse(localStorage.getItem(draftKey()) || "{}");
+  } catch {}
   ids.forEach((id) => {
     const input = document.getElementById(id);
     if (!input) return;
     if (stored[id] !== undefined) input.value = stored[id];
     input.addEventListener("input", () => {
-      const next = Object.fromEntries(ids.map((field) => [field, document.getElementById(field)?.value || ""]));
+      const next = Object.fromEntries(
+        ids.map((field) => [
+          field,
+          document.getElementById(field)?.value || "",
+        ]),
+      );
       localStorage.setItem(draftKey(), JSON.stringify(next));
     });
-    input.addEventListener("change", () => input.dispatchEvent(new Event("input")));
+    input.addEventListener("change", () =>
+      input.dispatchEvent(new Event("input")),
+    );
   });
-  document.addEventListener("payoo:clear-draft", () => localStorage.removeItem(draftKey()));
+  document.addEventListener("payoo:clear-draft", () =>
+    localStorage.removeItem(draftKey()),
+  );
 }
 
 function addTransactionPreview(buttonId, fields, title) {
@@ -32,7 +45,9 @@ function addTransactionPreview(buttonId, fields, title) {
   const section = button?.closest("section");
   const card = button?.closest(".card");
   if (!section || !card || section.querySelector(".payoo-form-preview")) return;
-  const host = card.parentElement?.classList.contains("space-y-4") ? card.parentElement : section;
+  const host = card.parentElement?.classList.contains("space-y-4")
+    ? card.parentElement
+    : section;
   host.classList.add("payoo-split-form");
   const preview = document.createElement("aside");
   preview.className = "payoo-form-preview card bg-base-100 shadow rounded-2xl";
@@ -40,9 +55,16 @@ function addTransactionPreview(buttonId, fields, title) {
   card.after(preview);
   const render = () => {
     const list = preview.querySelector("dl");
-    list.innerHTML = fields.map(([label, id]) => `<div class="flex justify-between gap-3"><dt class="text-neutral/60">${label}</dt><dd class="font-medium text-right break-all">${document.getElementById(id)?.value || "—"}</dd></div>`).join("");
+    list.innerHTML = fields
+      .map(
+        ([label, id]) =>
+          `<div class="flex justify-between gap-3"><dt class="text-neutral/60">${label}</dt><dd class="font-medium text-right break-all">${document.getElementById(id)?.value || "—"}</dd></div>`,
+      )
+      .join("");
   };
-  fields.forEach(([, id]) => document.getElementById(id)?.addEventListener("input", render));
+  fields.forEach(([, id]) =>
+    document.getElementById(id)?.addEventListener("input", render),
+  );
   render();
 }
 
@@ -72,7 +94,22 @@ function addStyles() {
 export function initPageUpgrades() {
   addStyles();
   setupDrafts();
-  addTransactionPreview("add-money-btn", [["Bank", "add-money-bank"], ["Account", "add-money-number"], ["Amount", "add-money-amount"]], "Add money");
-  addTransactionPreview("cashout-btn", [["Agent", "cashout-number"], ["Amount", "cashout-amount"]], "Cashout details");
-  addTransactionPreview("send-money-btn", [["Recipient", "recipient-number"], ["Amount", "send-amount"], ["Message", "send-message"]], "Transfer review");
+  addTransactionPreview(
+    "add-money-btn",
+    [
+      ["Bank", "add-money-bank"],
+      ["Account", "add-money-number"],
+      ["Amount", "add-money-amount"],
+    ],
+    "Add money",
+  );
+  addTransactionPreview(
+    "cashout-btn",
+    [
+      ["Agent", "cashout-number"],
+      ["Amount", "cashout-amount"],
+    ],
+    "Cashout details",
+  );
+  // The Send Money page uses a modal review flow instead of the desktop sidebar preview.
 }

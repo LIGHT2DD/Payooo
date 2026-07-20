@@ -128,13 +128,15 @@ class SendMoneyController {
     const wrapper = document.createElement("div");
     wrapper.id = "payoo-send-review-modal";
     wrapper.className = "fixed inset-0 z-[60] flex items-center justify-center";
+    const total = Number(amount).toFixed(2);
     wrapper.innerHTML = `
       <div class="absolute inset-0 bg-black/40"></div>
-      <div class="bg-base-100 p-6 rounded-2xl shadow-lg z-10 w-full max-w-md">
+      <div class="bg-base-100 text-base-content p-6 rounded-2xl shadow-lg z-10 w-full max-w-md">
         <h3 class="font-bold mb-3">Review Transfer</h3>
-        <div class="space-y-2 text-sm text-slate-700">
+        <div class="space-y-2 text-sm">
           <div><strong>To:</strong> ${this.escapeHtml(recipient)}</div>
-          <div><strong>Amount:</strong> $${Number(amount).toFixed(2)}</div>
+          <div><strong>Amount:</strong> $${total}</div>
+          <div><strong>Total:</strong> $${total}</div>
           ${message ? `<div><strong>Message:</strong> ${this.escapeHtml(message)}</div>` : ""}
         </div>
         <div class="mt-4 flex gap-2 justify-end">
@@ -207,9 +209,12 @@ class SendMoneyController {
     const container = document.getElementById("contacts-list");
     if (!container) return;
 
-    const allContacts = [...this.savedContacts, ...this.recentContacts.filter(
-      rc => !this.savedContacts.some(sc => sc.phone === rc.phone)
-    )];
+    const allContacts = [
+      ...this.savedContacts,
+      ...this.recentContacts.filter(
+        (rc) => !this.savedContacts.some((sc) => sc.phone === rc.phone),
+      ),
+    ];
 
     const sorted = [...allContacts].sort((a, b) => {
       if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -236,20 +241,25 @@ class SendMoneyController {
         (contact) => `
       <div class="contact-item flex items-center justify-between p-3 bg-base-200 rounded-xl" data-phone="${contact.phone}">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span class="text-primary font-bold">${contact.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()
-              .slice(0, 2)}</span>
-          </div>
-          <div>
-            <p class="font-medium text-sm">${contact.name}</p>
-            <p class="text-xs text-neutral/50">${contact.phone}</p>
+          <button class="pin-contact btn btn-ghost btn-xs" type="button" data-phone="${contact.phone}" aria-label="${contact.pinned ? "Unpin" : "Pin"} ${contact.name}">
+            <i class="${contact.pinned ? "fa-solid text-warning" : "fa-regular"} fa-star"></i>
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-primary font-bold">${contact.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2)}</span>
+            </div>
+            <div>
+              <p class="font-medium text-sm">${contact.name}</p>
+              <p class="text-xs text-neutral/50">${contact.phone}</p>
+            </div>
           </div>
         </div>
-        <div class="flex items-center gap-1"><button class="pin-contact btn btn-ghost btn-xs" type="button" data-phone="${contact.phone}" aria-label="${contact.pinned ? "Unpin" : "Pin"} ${contact.name}"><i class="${contact.pinned ? "fa-solid text-warning" : "fa-regular"} fa-star"></i></button><i class="fa-solid fa-chevron-right text-neutral/30"></i></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-neutral/30"></i></div>
       </div>
     `,
       )
@@ -270,11 +280,22 @@ class SendMoneyController {
     container.querySelectorAll(".pin-contact").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.stopPropagation();
-        const toggle = (contacts) => contacts.map((contact) => contact.phone === button.dataset.phone ? { ...contact, pinned: !contact.pinned } : contact);
+        const toggle = (contacts) =>
+          contacts.map((contact) =>
+            contact.phone === button.dataset.phone
+              ? { ...contact, pinned: !contact.pinned }
+              : contact,
+          );
         this.savedContacts = toggle(this.savedContacts);
         this.recentContacts = toggle(this.recentContacts);
-        localStorage.setItem("payoo_contacts", JSON.stringify(this.savedContacts));
-        localStorage.setItem("recent_contacts", JSON.stringify(this.recentContacts));
+        localStorage.setItem(
+          "payoo_contacts",
+          JSON.stringify(this.savedContacts),
+        );
+        localStorage.setItem(
+          "recent_contacts",
+          JSON.stringify(this.recentContacts),
+        );
         this.renderContacts();
       });
     });
@@ -366,20 +387,7 @@ class SendMoneyController {
   }
 
   updateSummary() {
-    const amount = getNumberValue("send-amount");
-    const summary = document.getElementById("transfer-summary");
-
-    if (!summary) return;
-
-    if (amount > 0) {
-      summary.classList.remove("hidden");
-      document.getElementById("summary-amount").textContent =
-        `$${amount.toFixed(2)}`;
-      document.getElementById("summary-total").textContent =
-        `$${amount.toFixed(2)}`;
-    } else {
-      summary.classList.add("hidden");
-    }
+    // Kept for any future summary needs, but current flow uses the modal review.
   }
 
   setupSendButton() {
@@ -505,7 +513,6 @@ class SendMoneyController {
       document.getElementById("send-pin").value = "";
       document.dispatchEvent(new Event("payoo:clear-draft"));
       document.getElementById("send-pin").classList.remove("input-error");
-      document.getElementById("transfer-summary").classList.add("hidden");
       document.getElementById("recipient-name-preview").classList.add("hidden");
 
       document
