@@ -1,6 +1,7 @@
 import { initGlobalUX } from "./ux.js";
 import { initPageUpgrades } from "./page-upgrades.js";
 import { initEnhancements } from "./enhancements.js";
+import { updateBalanceDisplay } from "./dom.js";
 
 // Desktop Shell: persistent sidebar and top header injection.
 // Works on authenticated pages.
@@ -148,8 +149,9 @@ export function initDesktopShell({ pageId, navItems = [] } = {}) {
         min-height: 100vh;
         width: 100%;
         display: grid;
-        grid-template-columns: 280px minmax(0, 1fr);
+        grid-template-columns: 1fr;
         transition: grid-template-columns 0.25s ease;
+        overflow-x: hidden;
       }
 
       .payoo-shell.collapsed {
@@ -157,12 +159,13 @@ export function initDesktopShell({ pageId, navItems = [] } = {}) {
       }
 
       .payoo-sidebar {
-        position: sticky;
+        position: fixed;
         top: 0;
+        left: 0;
+        z-index: 20;
         height: 100vh;
-        width: 100%;
-        min-width: 0;
-        overflow: hidden;
+        width: 280px;
+        overflow-y: auto;
         border-right: 1px solid rgba(116, 96, 255, 0.14);
         background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.95));
         backdrop-filter: blur(10px);
@@ -171,7 +174,10 @@ export function initDesktopShell({ pageId, navItems = [] } = {}) {
 
       .payoo-shell.collapsed .payoo-sidebar {
         width: 92px;
-        min-width: 92px;
+      }
+
+      .payoo-shell.collapsed .payoo-main {
+        margin-left: 92px;
       }
 
       .payoo-shell.collapsed .payoo-sidebar .p-4 {
@@ -225,21 +231,30 @@ export function initDesktopShell({ pageId, navItems = [] } = {}) {
 
       .payoo-main {
         display: grid;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: 1fr;
+        margin-left: 280px;
+        margin-top: 60px;
+        position: relative;
       }
 
       .payoo-topbar {
-        position: sticky;
+        position: fixed;
         top: 0;
+        left: 280px;
+        right: 0;
         z-index: 30;
         border-bottom: 1px solid rgba(116, 96, 255, 0.14);
-        background: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.95);
         backdrop-filter: blur(10px);
       }
 
       [data-theme="dark"] .payoo-topbar {
         border-bottom-color: rgba(52, 211, 153, 0.18);
         background: rgba(15,23,42,0.88);
+      }
+
+      .payoo-shell.collapsed .payoo-topbar {
+        left: 92px;
       }
 
       @media (max-width: 1199px) {
@@ -485,20 +500,18 @@ export function initDesktopShell({ pageId, navItems = [] } = {}) {
       const headerUser = root.querySelector("#payoo-header-user");
       if (headerUser) headerUser.textContent = user.name || "User";
       if (phone) phone.textContent = user.phone || "—";
-      if (balance)
-        balance.textContent = `৳${Number(user.balance || 0).toLocaleString()}`;
+      if (balance) updateBalanceDisplay(user.balance || 0);
     }
   } catch {}
 
   // Listen for transaction events to update shell balance
   window.addEventListener("payoo:transaction", () => {
     try {
-      const updatedUser = JSON.parse(sessionStorage.getItem("payoo_user") || "null");
+      const updatedUser = JSON.parse(
+        sessionStorage.getItem("payoo_user") || "null",
+      );
       if (updatedUser) {
-        const balanceEl = root.querySelector("#payoo-shell-balance");
-        if (balanceEl) {
-          balanceEl.textContent = `৳${Number(updatedUser.balance || 0).toLocaleString()}`;
-        }
+        updateBalanceDisplay(updatedUser.balance || 0);
       }
     } catch {}
   });

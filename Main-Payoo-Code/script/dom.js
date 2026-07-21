@@ -14,7 +14,7 @@ export function getElement(id) {
 
 export function getValue(id) {
   const element = getElement(id);
-  return element ? element.value.trim() : '';
+  return element ? element.value.trim() : "";
 }
 
 export function getNumberValue(id) {
@@ -35,84 +35,100 @@ export function setValue(id, value) {
 
 export function getInnerText(id) {
   const element = getElement(id);
-  return element ? element.textContent.trim() : '';
+  return element ? element.textContent.trim() : "";
 }
 
 export function getNumberFromText(id) {
   const text = getInnerText(id);
-  const number = parseFloat(text.replace(/[^0-9.]/g, ''));
+  const number = parseFloat(text.replace(/[^0-9.]/g, ""));
   return isNaN(number) ? 0 : number;
 }
 
 export function showElement(id) {
   const element = getElement(id);
-  if (element) element.classList.remove('hidden');
+  if (element) element.classList.remove("hidden");
 }
 
 export function hideElement(id) {
   const element = getElement(id);
-  if (element) element.classList.add('hidden');
+  if (element) element.classList.add("hidden");
 }
 
 export function toggleVisibility(id) {
   const element = getElement(id);
-  if (element) element.classList.toggle('hidden');
+  if (element) element.classList.toggle("hidden");
 }
 
 export function showOnly(idsToShow) {
-  const sections = ['add-money', 'cashout', 'send-money', 'get-bonus', 'pay-bill', 'transactions'];
-  sections.forEach(id => hideElement(id));
-  idsToShow.forEach(id => showElement(id));
+  const sections = [
+    "add-money",
+    "cashout",
+    "send-money",
+    "get-bonus",
+    "pay-bill",
+    "transactions",
+  ];
+  sections.forEach((id) => hideElement(id));
+  idsToShow.forEach((id) => showElement(id));
 }
 
 export function updateBalanceDisplay(balance) {
-  // ✅ Convert to number and format properly
-  const numBalance = Number(balance);
-  
-  // Check if it's a whole number
-  if (Number.isInteger(numBalance)) {
-    // Display as whole number without decimals
-    setText('balance', numBalance.toString());
-  } else {
-    // Display with 2 decimal places
-    setText('balance', numBalance.toFixed(2));
+  const numBalance = Number(balance ?? 0);
+  const formattedBalance = Number.isFinite(numBalance)
+    ? Number.isInteger(numBalance)
+      ? numBalance.toString()
+      : numBalance.toFixed(2)
+    : "0.00";
+
+  setText("balance", formattedBalance);
+
+  const shellBalance = getElement("payoo-shell-balance");
+  if (shellBalance) {
+    shellBalance.textContent = `৳${numBalance.toLocaleString()}`;
+  }
+
+  const dashboardBalance = getElement("dashboard-balance");
+  if (dashboardBalance) {
+    dashboardBalance.textContent = formattedBalance;
   }
 }
 
 export function displayError(message) {
-  const toastContainer = document.getElementById('toast-container') || createToastContainer();
-  const toast = document.createElement('div');
-  toast.className = 'alert alert-error shadow-lg animate-fade-in';
+  const toastContainer =
+    document.getElementById("toast-container") || createToastContainer();
+  const toast = document.createElement("div");
+  toast.className = "alert alert-error shadow-lg animate-fade-in";
   toast.innerHTML = `
     <span>${message}</span>
     <button onclick="this.parentElement.remove()" class="btn btn-sm btn-ghost">✕</button>
   `;
   toastContainer.appendChild(toast);
-  
+
   setTimeout(() => {
     if (toast.parentElement) toast.remove();
   }, 5000);
 }
 
 export function displaySuccess(message) {
-  const toastContainer = document.getElementById('toast-container') || createToastContainer();
-  const toast = document.createElement('div');
-  toast.className = 'alert alert-success shadow-lg animate-fade-in';
+  const toastContainer =
+    document.getElementById("toast-container") || createToastContainer();
+  const toast = document.createElement("div");
+  toast.className = "alert alert-success shadow-lg animate-fade-in";
   toast.innerHTML = `
     <span>${message}</span>
     <button onclick="this.parentElement.remove()" class="btn btn-sm btn-ghost">✕</button>
   `;
   toastContainer.appendChild(toast);
-  
+
   setTimeout(() => {
     if (toast.parentElement) toast.remove();
   }, 5000);
 }
 
 function createToastContainer() {
-  const container = document.createElement('div');
-  container.id = 'toast-container';
-  container.className = 'fixed top-4 right-4 z-50 max-w-sm w-full space-y-2';
+  const container = document.createElement("div");
+  container.id = "toast-container";
+  container.className = "fixed top-4 right-4 z-50 max-w-sm w-full space-y-2";
   document.body.appendChild(container);
   return container;
 }
